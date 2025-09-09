@@ -1,0 +1,251 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Love Letter</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/p5.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: url('https://images.unsplash.com/photo-1530103862676-de8c9debad1d?auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Georgia', serif;
+        }
+        #card {
+            width: 90%;
+            max-width: 600px;
+            min-height: 600px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            position: relative;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        #letter {
+            opacity: 0;
+            transition: opacity 2s ease-in;
+            font-size: 16px;
+            color: #333;
+            max-height: 500px;
+            overflow-y: auto;
+            padding: 10px;
+            line-height: 1.5;
+        }
+        #letter.show {
+            opacity: 1;
+        }
+        h1 {
+            color: #ff4d94;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        button {
+            background: #ff4d94;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+            margin-bottom: 15px;
+        }
+        button:hover {
+            background: #e03e7e;
+        }
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+        audio {
+            margin-top: 10px;
+            width: 200px;
+        }
+        @media (max-width: 600px) {
+            #card {
+                width: 95%;
+                min-height: 500px;
+            }
+            h1 {
+                font-size: 24px;
+            }
+            #letter {
+                font-size: 14px;
+            }
+            button {
+                font-size: 12px;
+                padding: 8px 16px;
+            }
+            audio {
+                width: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="card">
+        <h1>Happiest Birthday, Guddaaa...!! 🎉</h1>
+        <button id="revealButton">Love Uhh Bebuuu.....</button>
+        <audio controls autoplay loop>
+            <source src="https://www.bensound.com/bensound-music/bensound-sweet.mp3" type="audio/mp3">
+            Your browser does not support the audio element.
+        </audio>
+        <div id="letter">
+            <p>Meri Pyari Bebuu.....</p>
+            <p>As I write this, my heart overflows with love and so much emotions for you on your beautiful birthday. This day is more than a celebration of another year—it’s a moment to honor the incredible woman you are and the endless joy you bring into my life. I cherish every memory we’ve created, every second of time spent together, and every moment that has woven our lives into this beautiful tapestry of love.</p>
+            <p>From the day we met, you’ve filled my world with warmth. I still recall your smile lighting up the room, your laugh making my heart skip. Those early moments are treasures I’ll carry forever. Whether it was our first meet, talking for hours, or quiet evenings holding each other at sukh dham, those memories are the foundation of us. Each one reminds me how lucky I am to have you.</p>
+            <p>Your love makes every moment extraordinary. I think of the time we spent, hand in hand, laughing when we got lost on that hiking trail of garadia mahadev but found a breathtaking view. Or nights sharing dreams. These moments, big and small, are the heartbeat of our story, making even the simplest things unforgettable.</p>
+            <p>You make me feel so loved, so cared for, in ways I never thought possible. Your listening ear when I’m struggling, your celebration of my victories, your hand through life’s uncertainties—it all means the world. Your kindness, strength, and support are gifts I thank the universe for daily. You make me feel seen, understood, and cherished, and I hope I make you feel as loved as you make me.</p>
+            <p>On your birthday, know that my love for you grows deeper every day. You are my partner, confidante, and greatest adventure. The time we spend together is my greatest treasure, and I look forward to every moment we’ll share. I dream of more laughter, adventures, and quiet mornings with you sipping coffee. I want a lifetime of memories, each more beautiful than the last.</p>
+            <p>Bebuuu...... you are my everything. Your birthday reminds you how much you mean to me, how I adore you, and how grateful I am for every moment we share. I promise to love you fiercely, care for you with all my heart, and make every day as special as you are. Happy Birthday, Guddaaaa.... I love you more than words can express.</p>
+            <p>Forever Yours<br> Gudduuu...</p>
+            <p>P.S. I wanted to planned a little something special for us tonight—a moment to make another memory to cherish. I can’t wait to see your smile light up the world again...</p>
+        </div>
+    </div>
+    <script>
+        let particles = [];
+
+        function setup() {
+            let canvas = createCanvas(windowWidth, windowHeight);
+            canvas.position(0, 0);
+            // Set initial audio volume to low
+            let audio = document.querySelector('audio');
+            audio.volume = 0.3; // Low volume for subtle background music
+        }
+
+        function draw() {
+            clear();
+            if (frameCount % 30 === 0) { // Add new particle every half-second
+                let type = random(['heart', 'balloon', 'sparkle']);
+                particles.push(new Particle(type));
+            }
+            for (let i = particles.length - 1; i >= 0; i--) {
+                particles[i].update();
+                particles[i].display();
+                if (particles[i].isFinished()) {
+                    particles.splice(i, 1);
+                }
+            }
+        }
+
+        class Particle {
+            constructor(type) {
+                this.type = type;
+                this.x = random(width);
+                this.y = random(height, height + 100);
+                this.speed = random(1, 4);
+                this.size = random(10, 30);
+                this.alpha = 255;
+                this.color = type === 'balloon' ? color(random(255), random(100, 255), random(100, 255)) : null;
+            }
+
+            update() {
+                this.y -= this.speed;
+                if (this.type === 'sparkle') {
+                    this.alpha -= 3;
+                    this.x += random(-1, 1);
+                }
+                if (this.y < -this.size || this.alpha < 0) {
+                    this.y = height + this.size;
+                    this.x = random(width);
+                    this.alpha = 255;
+                }
+            }
+
+            display() {
+                noStroke();
+                if (this.type === 'heart') {
+                    fill(255, 77, 148, this.alpha);
+                    beginShape();
+                    vertex(this.x, this.y);
+                    bezierVertex(this.x - this.size / 2, this.y - this.size / 2, this.x - this.size, this.y + this.size / 3, this.x, this.y + this.size);
+                    bezierVertex(this.x + this.size, this.y + this.size / 3, this.x + this.size / 2, this.y - this.size / 2, this.x, this.y);
+                    endShape(CLOSE);
+                } else if (this.type === 'balloon') {
+                    fill(this.color);
+                    ellipse(this.x, this.y, this.size, this.size * 1.2);
+                    stroke(0, 100);
+                    line(this.x, this.y + this.size * 0.6, this.x, this.y + this.size);
+                    noStroke();
+                } else if (this.type === 'sparkle') {
+                    fill(255, 255, 0, this.alpha);
+                    beginShape();
+                    for (let i = 0; i < 8; i++) {
+                        let angle = TWO_PI / 8 * i;
+                        let r = i % 2 === 0 ? this.size : this.size / 2;
+                        vertex(this.x + cos(angle) * r, this.y + sin(angle) * r);
+                    }
+                    endShape(CLOSE);
+                }
+            }
+
+            isFinished() {
+                return this.y < -this.size || this.alpha < 0;
+            }
+        }
+
+        function showLetter() {
+            document.getElementById('letter').classList.add('show');
+        }
+
+        // Add event listeners for both click and touchstart
+        const revealButton = document.getElementById('revealButton');
+        revealButton.addEventListener('click', showLetter);
+        revealButton.addEventListener('touchstart', function(event) {
+            event.preventDefault(); // Prevent default touch behavior (e.g., scrolling)
+            showLetter();
+        });
+    </script>
+</body>
+</html>
